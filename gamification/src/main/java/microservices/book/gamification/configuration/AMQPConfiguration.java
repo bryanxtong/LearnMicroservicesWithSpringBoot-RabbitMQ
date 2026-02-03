@@ -1,13 +1,13 @@
 package microservices.book.gamification.configuration;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
 import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.annotation.RabbitListenerConfigurer;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.messaging.converter.JacksonJsonMessageConverter;
 import org.springframework.messaging.converter.MappingJackson2MessageConverter;
+import org.springframework.messaging.converter.MessageConverter;
 import org.springframework.messaging.handler.annotation.support.DefaultMessageHandlerMethodFactory;
 import org.springframework.messaging.handler.annotation.support.MessageHandlerMethodFactory;
 
@@ -41,12 +41,7 @@ public class AMQPConfiguration {
     @Bean
     public MessageHandlerMethodFactory messageHandlerMethodFactory() {
         DefaultMessageHandlerMethodFactory factory = new DefaultMessageHandlerMethodFactory();
-
-        final MappingJackson2MessageConverter jsonConverter =
-                new MappingJackson2MessageConverter();
-        jsonConverter.getObjectMapper().registerModule(
-                new ParameterNamesModule(JsonCreator.Mode.PROPERTIES));
-
+        JacksonJsonMessageConverter jsonConverter = new JacksonJsonMessageConverter();
         factory.setMessageConverter(jsonConverter);
         return factory;
     }

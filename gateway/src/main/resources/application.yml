@@ -3,12 +3,23 @@ server:
 spring:
   application:
     name: gateway
+  config:
+    import: 'optional:consul:'
   cloud:
     consul:
       enabled: true
       discovery:
         # Get only services that are passing the health check
         query-passing: true
+      config:
+        prefixes:
+          - config
+        format: YAML
+        default-context: application
+        watch:
+          enabled: true
+          delay: 3000
+          wait-time: 5
     gateway:
       server:
         webflux:
@@ -36,7 +47,8 @@ spring:
               args:
                 retries: 3
                 methods: GET,POST
+logging:
+  level:
+    org.springframework.amqp.rabbit.connection.CachingConnectionFactory: WARN
     # Uncomment the configuration below if you want to enable route matching logs
-#logging:
-  #  level:
-    #    org.springframework.cloud.gateway.handler.predicate: trace
+    #org.springframework.cloud.gateway.handler.predicate: trace
