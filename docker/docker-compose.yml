@@ -80,14 +80,16 @@ services:
     ports:
       - '5672:5672'
       - '15672:15672'
+    environment:
+      - RABBITMQ_ERLANG_COOKIE=SWQOKODSQALRPCLNMEQG
     networks:
       - microservices
     healthcheck:
       test: ["CMD-SHELL", "rabbitmq-diagnostics -q status"]
-      interval: 30s
+      interval: 10s
       timeout: 10s
-      retries: 3
-      start_period: 60s
+      retries: 10
+      start_period: 90s
   otel-lgtm:
     image: grafana/otel-lgtm
     container_name: otel-lgtm
@@ -97,6 +99,8 @@ services:
       - "4318:4318"
     restart: on-failure
     tty: true 
+    volumes:
+      - ./lgtm-data:/data
     networks:
       - microservices
 networks:
