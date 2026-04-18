@@ -1,7 +1,6 @@
-# Learn Microservices with Spring Boot 3 (including grafana lgtm)
+# Learn Microservices with Spring Boot 4 (including grafana lgtm)
 This repository contains the source code of the practical use case described in the book [Learn Microservices with Spring Boot 3 (3rd Edition)](https://link.springer.com/book/10.1007/978-1-4842-9757-5).
-And I made some changes and integrate grafana lgtm into it for metrics/traces/logs/profiles
-
+And I made some changes and integrate grafana lgtm into it for metrics/traces/logs/profiles  and updated to **Spring Boot 4.0.2** and **Spring Cloud 2025.1.1** 
 ## Features
 
 The figure below shows a high-level overview of the final version of our system.
@@ -16,6 +15,7 @@ The main concepts included in this project are:
 * Distributed traces with grafana lgtm(OpenTelemetry Collector/Grafana/Loki/Prometheus/Tempo/Pyroscope).
 * Building Docker images for Spring Boot applications with Dockerfiles(as BuildPack and Jib is not working in China).
 * Container Platforms, Application Platforms, and Cloud Services.
+* Microservices patterns: Service Discovery (Consul), Configuration Management, Async Messaging (RabbitMQ), Observability (OpenTelemetry).
 
 
 ## Running the app
@@ -58,6 +58,28 @@ See the figure below for a diagram showing the container view.
 ![Container View](resources/microservice_patterns-View-Containers.png)
 
 Once the backend and the frontend are started, you can navigate to `http://localhost:3000` in your browser and start resolving multiplication challenges.
+
+## Frontend Configuration
+
+The frontend API endpoint is hardcoded in `challenges-frontend/src/services/ChallengeApiClient.js`:
+```javascript
+static SERVER_URL = 'http://localhost:8000';
+```
+This points to the gateway service. No environment variable setup is needed for local development.
+
+## Troubleshooting
+
+### RabbitMQ Startup Issues
+
+If RabbitMQ fails to start with permission errors, the docker-compose configuration includes:
+- `RABBITMQ_ERLANG_COOKIE` environment variable for cookie management
+
+If issues persist, try:
+```bash
+cd docker
+docker-compose down -v  # Remove volumes
+docker-compose up       # Restart fresh
+```
 
 ## Playing with Docker Compose
 
